@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
-import Modal from "react-modal";
-import CountrySelect, { DEFAULT_COUNTRY } from "../country/CountrySelect";
-import LanguageSelect, { DEFAULT_LANGUAGE } from "../language/LanguageSelect";
-import CurrencySelect, { DEFAULT_CURRENCY } from "../currency/CurrencySelect";
+import { useState, useRef, useCallback, useReducer } from 'react';
+import { DEFAULT_COUNTRY } from '../country/CountrySelect';
+import { DEFAULT_LANGUAGE } from '../language/LanguageSelect';
+import { DEFAULT_CURRENCY } from '../currency/CurrencySelect';
+
+import SettingsButton from './SettingsButton';
+import SettingsModal from './SettingsModal';
 
 /* --- [TASK] ---
 Changes on modal are only applied on SAVE
@@ -93,62 +95,60 @@ FURTHER DETAILS
 - Downgrading to React 17 is not an option 😉
 --- [TASK] --- */
 
-// Component
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'save': {
+      // ? Deep copy since it has nested object (country)
+      const newState = JSON.parse(JSON.stringify(state));
+      for (const [key, value] of Object.entries(action.payload)) {
+        newState[key] = value;
+      }
+      return newState;
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
 const SettingsSelector = (): JSX.Element => {
   // States
-  const [modalIsOpen, setModalIsOpen] = React.useState<any>(false);
-  const [selectedCountry, setCountry] = React.useState<any>(DEFAULT_COUNTRY);
-  const [selectedCurrency, setCurrency] = React.useState<any>(DEFAULT_CURRENCY);
-  const [selectedLanguage, setLanguage] = React.useState<any>(DEFAULT_LANGUAGE);
+  // ? Initializer function for initial values of the reducer
+  const initializeSelected = () => {
+    return {
+      country: DEFAULT_COUNTRY,
+      currency: DEFAULT_CURRENCY,
+      language: DEFAULT_LANGUAGE,
+    };
+  };
+
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  // ? Used reducer to consolidate all state
+  // ? Can also use useState with object as a state
+  const [selected, dispatch] = useReducer(reducer, null, initializeSelected);
 
   // Render Counter
   const counter = useRef(0);
 
   // Actions
-  const handleOpen = () => {
+  // ? Memoize this since it is passed to a component to solve the rerendering issue
+  const handleOpen = useCallback(() => {
     setModalIsOpen(true);
-  };
+  }, []);
+
   const handleClose = () => {
     setModalIsOpen(false);
   };
 
-  const button = () => {
-    // Increase render count.
-    counter.current++;
-
-    // Log current render count.
-    console.log("Render count of button is: " + counter.current);
-
-    /* Button */
-    return (
-      <button onClick={handleOpen}>
-        {selectedCountry.name} - ({selectedCurrency} - {selectedLanguage})
-      </button>
-    );
-  };
+  // ? Button moved to a different component `SettingsButton.tsx`
+  // ? Modal moved to a different component `SettingsModal.tsx`
 
   // Render
   return (
     <div>
-      {button()}
-
+      <SettingsButton ref={counter} handleOpen={handleOpen} selected={selected} />
       {/* Modal */}
-      <Modal isOpen={modalIsOpen}>
-        {/* Header */}
-        <h2>Select your region, currency and language.</h2>
-
-        {/* Country */}
-        <CountrySelect value={selectedCountry} onChange={setCountry} />
-
-        {/* Currency */}
-        <CurrencySelect value={selectedCurrency} onChange={setCurrency} />
-
-        {/* Language */}
-        <LanguageSelect language={selectedLanguage} onChange={setLanguage} />
-
-        {/* Close button */}
-        <button onClick={handleClose}>Close</button>
-      </Modal>
+      <SettingsModal isOpen={modalIsOpen} selected={selected} dispatch={dispatch} handleClose={handleClose} />
     </div>
   );
 };
