@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import countries from 'i18n-iso-countries';
 import Select from 'react-select';
 
+import { CountryData } from '../../types';
 import { CountrySelectOption } from './CountrySelectOption';
 import { CountrySelectSingleValue } from './CountrySelectSingleValue';
 
@@ -12,8 +14,8 @@ countries.registerLocale(require('i18n-iso-countries/langs/en.json'));
 
 // Props
 interface CountrySelectProps {
-  value?: any;
-  onChange?: (value: any) => void;
+  value?: CountryData;
+  onChange?: (value: CountryData) => void;
 }
 
 // Constants
@@ -25,12 +27,16 @@ export const DEFAULT_COUNTRY = {
 // Component
 export const CountrySelect = ({ value = DEFAULT_COUNTRY, onChange }: CountrySelectProps) => {
   // Prepare Data
-  const data = Object.entries(countries.getNames('en', { select: 'official' })).map(([code, name]) => {
-    return {
-      value: { code, name },
-      label: name,
-    };
-  });
+  const data = useMemo(
+    () =>
+      Object.entries(countries.getNames('en', { select: 'official' })).map(([code, name]) => {
+        return {
+          value: { code, name },
+          label: name,
+        };
+      }),
+    []
+  );
   const defaultValue = { value: value, label: value.name };
 
   // Render
@@ -39,11 +45,12 @@ export const CountrySelect = ({ value = DEFAULT_COUNTRY, onChange }: CountrySele
       <label>
         <span>Country</span>
         <Select
+          isMulti={false}
           options={data}
           components={{ Option: CountrySelectOption, SingleValue: CountrySelectSingleValue }}
           defaultValue={defaultValue}
           onChange={(newValue) => {
-            onChange(newValue.value);
+            if (onChange) onChange(newValue!.value);
           }}
         />
       </label>

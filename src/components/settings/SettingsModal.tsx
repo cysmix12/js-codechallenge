@@ -1,20 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect, Dispatch } from 'react';
 import Modal from 'react-modal';
 
+import { SelectorData, SelectorState, ReducerAction } from '../../types';
 import CountrySelect from '../country/CountrySelect';
 import LanguageSelect from '../language/LanguageSelect';
 import CurrencySelect from '../currency/CurrencySelect';
 
+// @ts-ignore
 import styles from './SettingsSelector.module.css';
 
-const SettingsModal = (props) => {
+interface SettingsModalProps {
+  isOpen: boolean;
+  selected: SelectorData;
+  dispatch: Dispatch<ReducerAction>;
+  handleClose: () => void;
+}
+
+const SettingsModal = (props: SettingsModalProps) => {
   const { isOpen, selected, dispatch, handleClose } = props;
 
   // ? Introduced a separate state for keeping track of the changed values
   const [_selected, _setSelected] = useState(selected);
 
-  const handleChange = (value: any, key: string) => {
-    _setSelected((prevState) => ({
+  const handleChange = (value: SelectorState, key: string) => {
+    _setSelected((prevState: SelectorData) => ({
       ...prevState,
       [key]: value,
     }));
@@ -29,7 +38,7 @@ const SettingsModal = (props) => {
   };
 
   useEffect(() => {
-    _setSelected((prevState) => ({
+    _setSelected((prevState: SelectorData) => ({
       ...prevState,
       ...selected,
     }));

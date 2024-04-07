@@ -1,26 +1,24 @@
 import { forwardRef, memo } from 'react';
 
+import { SelectorData } from '../../types';
 import { getFlagSVG } from '../../helpers';
 
 interface SettingsButtonProps {
   handleOpen: () => void;
-  selected: {
-    country: {
-      name: string;
-      code: string;
-    };
-    currency: string;
-    language: string;
-  };
+  selected: SelectorData;
 }
 
 const SettingsButton = memo(
-  forwardRef((props: SettingsButtonProps, ref) => {
+  forwardRef<number, SettingsButtonProps>((props, ref) => {
     const { handleOpen, selected } = props;
     // Increase render count.
+    // ? Why didn't I just include the useRef declaration?
+    // ? A: To confirm that ref from outside can be passed and modified from here
+    // @ts-ignore
     ref.current++;
 
     // Log current render count.
+    // @ts-ignore
     console.log('Render count of button is: ' + ref.current);
 
     /* Button */

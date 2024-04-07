@@ -1,8 +1,9 @@
 import { useState, useRef, useCallback, useReducer } from 'react';
+
+import { SelectorData, ReducerAction } from '../../types';
 import { DEFAULT_COUNTRY } from '../country/CountrySelect';
 import { DEFAULT_LANGUAGE } from '../language/LanguageSelect';
 import { DEFAULT_CURRENCY } from '../currency/CurrencySelect';
-
 import SettingsButton from './SettingsButton';
 import SettingsModal from './SettingsModal';
 
@@ -95,7 +96,7 @@ FURTHER DETAILS
 - Downgrading to React 17 is not an option 😉
 --- [TASK] --- */
 
-const reducer = (state, action) => {
+const reducer = (state: SelectorData, action: ReducerAction) => {
   switch (action.type) {
     case 'save': {
       // ? Deep copy since it has nested object (country)
@@ -114,7 +115,7 @@ const reducer = (state, action) => {
 const SettingsSelector = (): JSX.Element => {
   // States
   // ? Initializer function for initial values of the reducer
-  const initializeSelected = () => {
+  const initializeSelected = (): SelectorData => {
     return {
       country: DEFAULT_COUNTRY,
       currency: DEFAULT_CURRENCY,

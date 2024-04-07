@@ -19,7 +19,7 @@
   -webkit-overflow-scrolling: touch;
   border-radius: 4px;
   outline: none;
-  padding: 48px;
+  padding: 16px 48px;
 }
 
 .container {
