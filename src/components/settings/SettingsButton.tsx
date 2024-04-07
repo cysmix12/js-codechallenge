@@ -1,7 +1,21 @@
 import { forwardRef, memo } from 'react';
 
+import { getFlagSVG } from '../../helpers';
+
+interface SettingsButtonProps {
+  handleOpen: () => void;
+  selected: {
+    country: {
+      name: string;
+      code: string;
+    };
+    currency: string;
+    language: string;
+  };
+}
+
 const SettingsButton = memo(
-  forwardRef((props, ref) => {
+  forwardRef((props: SettingsButtonProps, ref) => {
     const { handleOpen, selected } = props;
     // Increase render count.
     ref.current++;
@@ -12,7 +26,12 @@ const SettingsButton = memo(
     /* Button */
     return (
       <button onClick={handleOpen}>
-        {selected.country.name} - ({selected.currency} - {selected.language})
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <img src={getFlagSVG(selected.country.code)} height={32} width={32} loading="lazy" />
+          <span>
+            {selected.country.name} - ({selected.currency} - {selected.language})
+          </span>
+        </div>
       </button>
     );
   })

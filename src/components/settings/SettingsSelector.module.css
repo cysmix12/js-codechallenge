@@ -1,0 +1,51 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  position: absolute;
+  top: 128px;
+  left: 320px;
+  right: 320px;
+  bottom: 256px;
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 4px;
+  outline: none;
+  padding: 48px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.container label > span {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.btn-save {
+  color: white;
+  background-color: mediumseagreen;
+  border-color: darkgreen;
+}
+
+.btn-save:hover {
+  background-color: green;
+}

@@ -37,7 +37,7 @@ export const CountrySelect = ({ value = DEFAULT_COUNTRY, onChange }: CountrySele
   return (
     <div>
       <label>
-        Country
+        <span>Country</span>
         <Select
           options={data}
           components={{ Option: CountrySelectOption, SingleValue: CountrySelectSingleValue }}
